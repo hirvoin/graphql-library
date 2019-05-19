@@ -1,0 +1,18 @@
+{
+  "name": "fs-graphql",
+  "version": "1.0.0",
+  "description": "full-stack open 2019 part8-graphql",
+  "main": "library-backend.js",
+  "scripts": {
+    "start": "node index.js",
+    "watch": "nodemon index.js"
+  },
+  "author": "Aatu Hirvonen",
+  "license": "MIT",
+  "dependencies": {
+    "apollo-server": "^2.4.8",
+    "graphql": "^14.2.1",
+    "nodemon": "^1.18.11",
+    "uuid": "^3.3.2"
+  }
+}
