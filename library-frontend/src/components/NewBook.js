@@ -1,31 +1,35 @@
-import React, { useState } from 'react'
+import React, { useState } from "react"
 
-const NewBook = (props) => {
-  const [title, setTitle] = useState('')
-  const [author, setAuhtor] = useState('')
-  const [published, setPublished] = useState('')
-  const [genre, setGenre] = useState('')
+const NewBook = props => {
+  const [title, setTitle] = useState("")
+  const [author, setAuhtor] = useState("")
+  const [published, setPublished] = useState(0)
+  const [genre, setGenre] = useState("")
   const [genres, setGenres] = useState([])
 
   if (!props.show) {
     return null
   }
 
-  const submit = async (e) => {
+  const submit = async e => {
     e.preventDefault()
-    
-    console.log('add book...')
 
-    setTitle('')
-    setPublished('')
-    setAuhtor('')
+    await props.addBook({
+      variables: { title, author, published: Number(published), genres }
+    })
+
+    console.log("add book...")
+
+    setTitle("")
+    setPublished(0)
+    setAuhtor("")
     setGenres([])
-    setGenre('')
+    setGenre("")
   }
 
   const addGenre = () => {
     setGenres(genres.concat(genre))
-    setGenre('')
+    setGenre("")
   }
 
   return (
@@ -48,7 +52,7 @@ const NewBook = (props) => {
         <div>
           published
           <input
-            type='number'
+            type="number"
             value={published}
             onChange={({ target }) => setPublished(target.value)}
           />
@@ -58,12 +62,12 @@ const NewBook = (props) => {
             value={genre}
             onChange={({ target }) => setGenre(target.value)}
           />
-          <button onClick={addGenre} type="button">add genre</button>
+          <button onClick={addGenre} type="button">
+            add genre
+          </button>
         </div>
-        <div>
-          genres: {genres.join(' ')}
-        </div>
-        <button type='submit'>create book</button>
+        <div>genres: {genres.join(" ")}</div>
+        <button type="submit">create book</button>
       </form>
     </div>
   )
