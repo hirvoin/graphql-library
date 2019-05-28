@@ -25,6 +25,16 @@ const CREATE_BOOK = gql`
   }
 `
 
+const ALL_AUTHORS = gql`
+  {
+    allAuthors {
+      name
+      born
+      bookCount
+    }
+  }
+`
+
 const App = () => {
   const [page, setPage] = useState("authors")
 
@@ -40,7 +50,10 @@ const App = () => {
 
       <Books show={page === "books"} />
 
-      <Mutation mutation={CREATE_BOOK}>
+      <Mutation
+        mutation={CREATE_BOOK}
+        refetchQueries={[{ query: ALL_AUTHORS }]}
+      >
         {addBook => <NewBook show={page === "add"} addBook={addBook} />}
       </Mutation>
     </div>

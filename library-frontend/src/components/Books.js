@@ -11,7 +11,6 @@ const ALL_BOOKS = gql`
     }
   }
 `
-
 const Books = props => {
   if (!props.show) {
     return null
