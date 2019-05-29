@@ -1,6 +1,7 @@
 import React, { useState } from "react"
 import { Query } from "react-apollo"
 import { gql } from "apollo-boost"
+import EditAuthor from "./EditAuthor"
 
 const ALL_AUTHORS = gql`
   {
@@ -28,22 +29,25 @@ const Authors = props => {
           }
 
           return (
-            <table>
-              <tbody>
-                <tr>
-                  <th />
-                  <th>Born</th>
-                  <th>Books</th>
-                </tr>
-                {result.data.allAuthors.map(a => (
-                  <tr key={a.name}>
-                    <td>{a.name}</td>
-                    <td>{a.born}</td>
-                    <td>{a.bookCount}</td>
+            <div>
+              <table>
+                <tbody>
+                  <tr>
+                    <th />
+                    <th>Born</th>
+                    <th>Books</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                  {result.data.allAuthors.map(a => (
+                    <tr key={a.name}>
+                      <td>{a.name}</td>
+                      <td>{a.born}</td>
+                      <td>{a.bookCount}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <EditAuthor />
+            </div>
           )
         }}
       </Query>
