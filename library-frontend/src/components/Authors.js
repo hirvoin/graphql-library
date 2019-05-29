@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { Query } from "react-apollo"
+import { Query, Mutation } from "react-apollo"
 import { gql } from "apollo-boost"
 import EditAuthor from "./EditAuthor"
 
@@ -13,11 +13,20 @@ const ALL_AUTHORS = gql`
   }
 `
 
+const EDIT_AUTHOR = gql`
+  mutation editAuthor($name: String!, $setBornTo: Int!) {
+    editAuthor(name: $name, setBornTo: $setBornTo) {
+      name
+      born
+    }
+  }
+`
+
 const Authors = props => {
   if (!props.show) {
     return null
   }
-  const authors = []
+  const [authors, setAuthors] = []
 
   return (
     <div>
@@ -46,7 +55,12 @@ const Authors = props => {
                   ))}
                 </tbody>
               </table>
-              <EditAuthor />
+              <Mutation
+                mutation={EDIT_AUTHOR}
+                refetchQueries={[{ query: ALL_AUTHORS }]}
+              >
+                {editAuthor => <EditAuthor editAuthor={editAuthor} />}
+              </Mutation>
             </div>
           )
         }}
