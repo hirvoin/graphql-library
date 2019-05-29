@@ -51,13 +51,6 @@ const EditAuthor = props => {
       </Query>
       <form onSubmit={submit}>
         <div>
-          author
-          <input
-            value={author}
-            onChange={({ target }) => setAuthor(target.value)}
-          />
-        </div>
-        <div>
           birthyear
           <input
             value={birthyear}
