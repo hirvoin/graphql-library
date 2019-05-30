@@ -156,11 +156,16 @@ const resolvers = {
       return newBook
     },
     editAuthor: (root, args) => {
+      const authorNames = authors.map(a => a.name)
+      console.log("author names", authorNames)
+      console.log("arg.name", args.name)
       const author = authors.find(a => a.name === args.name)
+      console.log(author)
       if (!author) {
         return null
       }
       const updatedAuthor = { ...author, born: args.setBornTo }
+      console.log(updatedAuthor)
       authors = authors.map(a => (a.name === args.name ? updatedAuthor : a))
       return updatedAuthor
     }
