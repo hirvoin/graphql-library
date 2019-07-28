@@ -133,7 +133,7 @@ const typeDefs = gql`
 
   type Author {
     name: String
-    id: ID!
+    id: ID
     born: Int
     bookCount: Int!
   }
@@ -154,7 +154,7 @@ const resolvers = {
   Query: {
     bookCount: () => books.length,
     authorCount: () => authors.length,
-    allBooks: async () => await Book.find({}),
+    allBooks: async () => await Book.find({}).populate("author"),
     allAuthors: async () => await Author.find({})
   },
 
@@ -179,7 +179,7 @@ const resolvers = {
       const newBook = new Book({ ...args })
       console.log(newBook)
       await newBook.save()
-      return newBook
+      return newBook.toJSON()
     },
 
     editAuthor: (root, args) => {
