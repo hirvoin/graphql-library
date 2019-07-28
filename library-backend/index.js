@@ -169,20 +169,20 @@ const resolvers = {
 
       if (!authorsInDb.find(author => author.name === args.author)) {
         const newAuthor = new Author({ name: args.author })
+        console.log("newAuthor ", newAuthor)
         await newAuthor.save()
         const newBook = new Book({ ...args, author: newAuthor })
-        console.log("new book", newBook)
+        console.log("newBook ", newBook)
         await newBook.save()
-        return newBook
+        return newBook.toJSON()
       }
-
       const newBook = new Book({ ...args })
-      // console.log(newBook)
-      // await newBook.save()
+      console.log(newBook)
+      await newBook.save()
       return newBook
     },
+
     editAuthor: (root, args) => {
-      const authorNames = authors.map(a => a.name)
       console.log("arg.name", args.name)
       const author = authors.find(a => a.name === args.name)
       console.log(author)
