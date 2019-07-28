@@ -7,6 +7,9 @@ const ALL_BOOKS = gql`
     allBooks {
       title
       published
+      author {
+        name
+      }
     }
   }
 `
@@ -14,8 +17,6 @@ const Books = props => {
   if (!props.show) {
     return null
   }
-
-  const books = []
 
   return (
     <div>
@@ -27,6 +28,7 @@ const Books = props => {
           }
           return (
             <table>
+              {console.log(result.data.allBooks)}
               <tbody>
                 <tr>
                   <th />
@@ -36,7 +38,7 @@ const Books = props => {
                 {result.data.allBooks.map(a => (
                   <tr key={a.title}>
                     <td>{a.title}</td>
-                    <td>{a.author}</td>
+                    <td>{a.author.name}</td>
                     <td>{a.published}</td>
                   </tr>
                 ))}
