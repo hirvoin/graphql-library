@@ -1,4 +1,4 @@
-const { ApolloServer, gql } = require("apollo-server")
+const { ApolloServer, gql, UserInputError } = require("apollo-server")
 const mongoose = require("mongoose")
 const Book = require("./models/book")
 const Author = require("./models/author")
@@ -57,8 +57,8 @@ const typeDefs = gql`
 
 const resolvers = {
   Query: {
-    bookCount: () => Book.countDocuments({}),
-    authorCount: () => Author.countDocuments({}),
+    bookCount: () => Book.collection.countDocuments({}),
+    authorCount: () => Author.collection.countDocuments({}),
     allBooks: async (root, args) => {
       console.log(args.genre)
       if (args.genre) {
@@ -78,19 +78,50 @@ const resolvers = {
 
   Mutation: {
     addBook: async (root, args) => {
-      const isAuthor = Author.findOne({ name: args.author })
+      const isAuthor = await Author.findOne({ name: args.author })
+
       if (!isAuthor) {
-        const newAuthor = new Author({ name: args.author })
-        await newAuthor.save()
-        const newBook = new Book({ ...args, author: newAuthor })
-        await newBook.save()
-        return newBook
+        try {
+          const newAuthor = new Author({ name: args.author })
+          console.log("newauthor", newAuthor)
+          await newAuthor.save()
+        } catch (error) {
+          throw new UserInputError(
+            "Author name needs to consist minimum of four letters",
+            {
+              invalidArgs: args.author
+            }
+          )
+        }
+        try {
+          const newBook = new Book({ ...args, author: newAuthor })
+          await newBook.save()
+          return newBook
+        } catch (error) {
+          throw new UserInputError(
+            "Book title needs to consist minimum of two letters",
+            {
+              invalidArgs: args.author
+            }
+          )
+        }
       }
+
       const newBook = new Book({
         ...args,
         author: await Author.findOne({ name: args.author })
       })
-      await newBook.save()
+
+      try {
+        await newBook.save()
+      } catch (error) {
+        throw new UserInputError(
+          "Book title needs to consist minimum of two letters",
+          {
+            invalidArgs: args.author
+          }
+        )
+      }
       return newBook
     },
 
