@@ -103,30 +103,20 @@ const resolvers = {
       }
       console.log("authenticated")
       const isAuthor = await Author.findOne({ name: args.author })
-      // creating a new book with a new author s
+
+      // creating a new book with a new author
       if (!isAuthor) {
+        console.log("with new author")
         try {
           const newAuthor = new Author({ name: args.author })
-          await newAuthor.save()
-        } catch (error) {
-          throw new UserInputError(
-            "Author name needs to consist minimum of four letters",
-            {
-              invalidArgs: args.author
-            }
-          )
-        }
-        try {
           const newBook = new Book({ ...args, author: newAuthor })
           await newBook.save()
+          await newAuthor.save()
           return newBook
         } catch (error) {
-          throw new UserInputError(
-            "Book title needs to consist minimum of two letters",
-            {
-              invalidArgs: args.author
-            }
-          )
+          throw new UserInputError(error.message, {
+            invalidArgs: args.author
+          })
         }
       }
       // creating a new book with an existing author
@@ -134,6 +124,7 @@ const resolvers = {
         ...args,
         author: await Author.findOne({ name: args.author })
       })
+      console.log("newbook", newBook)
 
       try {
         await newBook.save()

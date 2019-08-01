@@ -2,6 +2,7 @@ import React, { useState } from "react"
 import Authors from "./components/Authors"
 import Books from "./components/Books"
 import NewBook from "./components/NewBook"
+import Login from "./components/Login"
 import { gql } from "apollo-boost"
 import { Mutation } from "react-apollo"
 
@@ -27,6 +28,14 @@ const CREATE_BOOK = gql`
   }
 `
 
+const LOGIN = gql`
+  mutation login($username: String!, $password: String!) {
+    login(username: $username, password: $password) {
+      value
+    }
+  }
+`
+
 const ALL_AUTHORS = gql`
   {
     allAuthors {
@@ -39,18 +48,42 @@ const ALL_AUTHORS = gql`
 
 const App = () => {
   const [page, setPage] = useState("authors")
+  const [token, setToken] = useState(localStorage.getItem("library-user-token"))
+
+  const logout = () => {
+    setToken(null)
+    localStorage.clear()
+  }
+
+  console.log("token on App", token)
 
   return (
     <div>
       <div>
         <button onClick={() => setPage("authors")}>authors</button>
         <button onClick={() => setPage("books")}>books</button>
-        <button onClick={() => setPage("add")}>add book</button>
+        {token ? (
+          <React.Fragment>
+            <button onClick={() => setPage("add")}>add book</button>
+            <button onClick={logout}>log out</button>
+          </React.Fragment>
+        ) : (
+          <button onClick={() => setPage("login")}>log in</button>
+        )}
       </div>
 
       <Authors show={page === "authors"} />
-
       <Books show={page === "books"} />
+
+      <Mutation mutation={LOGIN}>
+        {login => (
+          <Login
+            show={page === "login"}
+            login={login}
+            setToken={token => setToken(token)}
+          />
+        )}
+      </Mutation>
 
       <Mutation
         mutation={CREATE_BOOK}

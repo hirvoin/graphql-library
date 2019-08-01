@@ -46,6 +46,8 @@ const NewBook = props => {
 
   return (
     <div>
+      {console.log(title, author, published, genres)}
+      <h2>Add book</h2>
       <form onSubmit={submit}>
         <div>
           title
