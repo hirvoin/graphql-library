@@ -46,6 +46,19 @@ const ALL_AUTHORS = gql`
   }
 `
 
+const ALL_BOOKS = gql`
+  {
+    allBooks {
+      title
+      published
+      genres
+      author {
+        name
+      }
+    }
+  }
+`
+
 const ME = gql`
   {
     me {
@@ -99,7 +112,7 @@ const App = () => {
 
       <Mutation
         mutation={CREATE_BOOK}
-        refetchQueries={[{ query: ALL_AUTHORS }]}
+        refetchQueries={[{ query: ALL_AUTHORS }, { query: ALL_BOOKS }]}
       >
         {addBook => <NewBook show={page === "add"} addBook={addBook} />}
       </Mutation>

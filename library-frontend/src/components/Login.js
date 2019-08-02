@@ -33,34 +33,32 @@ const Login = props => {
     return null
   }
 
+  if (localStorage.getItem("library-user-token")) {
+    return <div>You have logged in succesfully</div>
+  }
+
   return (
     <div>
-      {props.token ? (
-        <div>You have logged in succesfully</div>
-      ) : (
+      <h2>Log in</h2>
+      {console.log("username", username, "password", password)}
+      <form onSubmit={submit}>
         <div>
-          <h2>Log in</h2>
-          {console.log("username", username, "password", password)}
-          <form onSubmit={submit}>
-            <div>
-              username
-              <input
-                value={username}
-                onChange={({ target }) => setUsername(target.value)}
-              />
-            </div>
-            <div>
-              password
-              <input
-                value={password}
-                type="password"
-                onChange={({ target }) => setPassword(target.value)}
-              />
-            </div>
-            <button type="submit">log in</button>
-          </form>
+          username
+          <input
+            value={username}
+            onChange={({ target }) => setUsername(target.value)}
+          />
         </div>
-      )}
+        <div>
+          password
+          <input
+            value={password}
+            type="password"
+            onChange={({ target }) => setPassword(target.value)}
+          />
+        </div>
+        <button type="submit">log in</button>
+      </form>
     </div>
   )
 }
