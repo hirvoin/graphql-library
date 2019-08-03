@@ -2,7 +2,8 @@ const {
   ApolloServer,
   gql,
   UserInputError,
-  AuthenticationError
+  AuthenticationError,
+  PubSub
 } = require("apollo-server")
 const mongoose = require("mongoose")
 const jwt = require("jsonwebtoken")
@@ -16,6 +17,8 @@ const MONGODB_URI =
   "mongodb://jaska123:jaska123@ds263856.mlab.com:63856/fullstack-library"
 
 const JWT_SECRET = "SECRET_KEY"
+
+const pubSub = new PubSub()
 
 console.log("connecting to", MONGODB_URI)
 
@@ -47,6 +50,10 @@ const typeDefs = gql`
     editAuthor(name: String!, setBornTo: Int!): Author
     createUser(username: String!, favoriteGenre: String!): User
     login(username: String!, password: String!): Token
+  }
+
+  type Subscription {
+    bookAdded: Book!
   }
 
   type Book {
@@ -112,6 +119,7 @@ const resolvers = {
           const newBook = new Book({ ...args, author: newAuthor })
           await newBook.save()
           await newAuthor.save()
+          pubSub.publish("BOOK_ADDED", { bookAdded: newBook })
           return newBook
         } catch (error) {
           throw new UserInputError(error.message, {
@@ -129,13 +137,11 @@ const resolvers = {
       try {
         await newBook.save()
       } catch (error) {
-        throw new UserInputError(
-          "Book title needs to consist minimum of two letters",
-          {
-            invalidArgs: args.author
-          }
-        )
+        throw new UserInputError(error.message, {
+          invalidArgs: args.author
+        })
       }
+      pubSub.publish("BOOK_ADDED", { bookAdded: newBook })
       return newBook
     },
 
@@ -145,9 +151,13 @@ const resolvers = {
       }
       console.log("authenticated")
       const authorToUpdate = await Author.findOne({ name: args.name })
-      const updatedAuthor = await Author.findByIdAndUpdate(authorToUpdate.id, {
-        born: args.setBornTo
-      })
+      const updatedAuthor = await Author.findByIdAndUpdate(
+        authorToUpdate.id,
+        {
+          born: args.setBornTo
+        },
+        { new: true }
+      )
       return updatedAuthor
     },
 
@@ -179,6 +189,12 @@ const resolvers = {
       const token = { value: jwt.sign(userForToken, JWT_SECRET) }
       return token
     }
+  },
+
+  Subscription: {
+    bookAdded: {
+      subscribe: () => pubSub.asyncIterator(["BOOK_ADDED"])
+    }
   }
 }
 
@@ -196,6 +212,7 @@ const server = new ApolloServer({
   }
 })
 
-server.listen().then(({ url }) => {
+server.listen().then(({ url, subscriptionsUrl }) => {
   console.log(`Server ready at ${url}`)
+  console.log(`Subscriptions ready at ${subscriptionsUrl}`)
 })

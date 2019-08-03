@@ -4,7 +4,7 @@ import Books from "./components/Books"
 import NewBook from "./components/NewBook"
 import Login from "./components/Login"
 import { gql } from "apollo-boost"
-import { Mutation, Query } from "react-apollo"
+import { Mutation, Query, Subscription } from "react-apollo"
 
 const CREATE_BOOK = gql`
   mutation addBook(
@@ -68,6 +68,14 @@ const ME = gql`
   }
 `
 
+const BOOK_ADDED = gql`
+  {
+    bookAdded {
+      title
+    }
+  }
+`
+
 const App = () => {
   const [page, setPage] = useState("authors")
   const [token, setToken] = useState(localStorage.getItem("library-user-token"))
@@ -81,6 +89,11 @@ const App = () => {
 
   return (
     <div>
+      <div>
+        <Subscription subscription={BOOK_ADDED}>
+          {({ data, loading }) => <h4>New book: {!loading && data}</h4>}
+        </Subscription>
+      </div>
       <div>
         <button onClick={() => setPage("authors")}>authors</button>
         <button onClick={() => setPage("books")}>books</button>

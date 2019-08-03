@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 
 const Login = props => {
-  console.log("token", props.token)
+  console.log("token for login component", props.token)
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
 

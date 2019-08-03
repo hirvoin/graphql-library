@@ -46,11 +46,6 @@ const Books = props => {
                   })
                 })}
                 {result.data.allBooks.forEach(book => {
-                  console.log(
-                    "haloo vittu",
-                    book.genres,
-                    book.genres.includes(genreToShow)
-                  )
                   if (book.genres.includes(genreToShow)) {
                     booksToShow.push(book)
                   }
