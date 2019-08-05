@@ -36,7 +36,6 @@ const Books = props => {
           }
           return (
             <div>
-              {console.log("genrestoshow", genreToShow)}
               <table>
                 {result.data.allBooks.forEach(book => {
                   book.genres.forEach(genre => {
@@ -50,7 +49,6 @@ const Books = props => {
                     booksToShow.push(book)
                   }
                 })}
-                {console.log(result.data.allBooks, disctinctGenres)}
                 <tbody>
                   <tr>
                     <th>title</th>

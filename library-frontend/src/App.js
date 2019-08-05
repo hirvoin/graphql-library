@@ -69,9 +69,12 @@ const ME = gql`
 `
 
 const BOOK_ADDED = gql`
-  {
+  subscription {
     bookAdded {
       title
+      author {
+        name
+      }
     }
   }
 `
@@ -91,7 +94,19 @@ const App = () => {
     <div>
       <div>
         <Subscription subscription={BOOK_ADDED}>
-          {({ data, loading }) => <h4>New book: {!loading && data}</h4>}
+          {(data, loading) => {
+            console.log("loading...", data)
+            if (!data.loading && data.bookAdded) {
+              console.log("data ready", data)
+              window.alert(
+                data.bookAdded.title,
+                " written by ",
+                data.bookAdded.author.name,
+                " has been added to database!"
+              )
+            }
+            return null
+          }}
         </Subscription>
       </div>
       <div>
