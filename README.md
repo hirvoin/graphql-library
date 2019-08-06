@@ -1,2 +1,2 @@
-# fs19-osa08
+# graphql-library
 Fullstack-kurssin GraphQL-osio
