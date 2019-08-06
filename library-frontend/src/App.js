@@ -102,7 +102,7 @@ const App = () => {
     localStorage.clear()
   }
 
-  console.log("token on App", token)
+  console.log("token on app", token)
 
   return (
     <div>
