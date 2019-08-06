@@ -11,12 +11,12 @@ const Book = require("./models/book")
 const Author = require("./models/author")
 const User = require("./models/user")
 
+require("dotenv").config()
+
 mongoose.set("useFindAndModify", false)
 
-const MONGODB_URI =
-  "mongodb://jaska123:jaska123@ds263856.mlab.com:63856/fullstack-library"
-
-const JWT_SECRET = "SECRET_KEY"
+const MONGODB_URI = process.env.MONGODB_URI
+const JWT_SECRET = process.env.JWT_SECRET
 
 const pubSub = new PubSub()
 
@@ -132,7 +132,6 @@ const resolvers = {
         ...args,
         author: await Author.findOne({ name: args.author })
       })
-      console.log("newbook", newBook)
 
       try {
         await newBook.save()

@@ -3,8 +3,15 @@ import Authors from "./components/Authors"
 import Books from "./components/Books"
 import NewBook from "./components/NewBook"
 import Login from "./components/Login"
+import Notification from "./components/Notification"
 import { gql } from "apollo-boost"
 import { Mutation, Query, Subscription } from "react-apollo"
+import {
+  useQuery,
+  useMutation,
+  useSubscription,
+  useApolloClient
+} from "@apollo/react-hooks"
 
 const CREATE_BOOK = gql`
   mutation addBook(
@@ -82,6 +89,13 @@ const BOOK_ADDED = gql`
 const App = () => {
   const [page, setPage] = useState("authors")
   const [token, setToken] = useState(localStorage.getItem("library-user-token"))
+  const [notification, setNotification] = useState(null)
+
+  useSubscription(BOOK_ADDED, {
+    onSubscriptionData: ({ subscriptionData }) => {
+      console.log(subscriptionData)
+    }
+  })
 
   const logout = () => {
     setToken(null)
@@ -92,22 +106,18 @@ const App = () => {
 
   return (
     <div>
+      <Notification notification={notification} />
       <div>
-        <Subscription subscription={BOOK_ADDED}>
+        {/* <Subscription subscription={BOOK_ADDED}>
           {(data, loading) => {
-            console.log("loading...", data)
-            if (!data.loading && data.bookAdded) {
+            console.log("loading...", data.data)
+            if (!data.loading && data.data.bookAdded) {
               console.log("data ready", data)
-              window.alert(
-                data.bookAdded.title,
-                " written by ",
-                data.bookAdded.author.name,
-                " has been added to database!"
-              )
+              setNotification(data.data.bookAdded.title)
             }
             return null
           }}
-        </Subscription>
+        </Subscription> */}
       </div>
       <div>
         <button onClick={() => setPage("authors")}>authors</button>
