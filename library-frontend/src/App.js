@@ -107,18 +107,7 @@ const App = () => {
   return (
     <div>
       <Notification notification={notification} />
-      <div>
-        {/* <Subscription subscription={BOOK_ADDED}>
-          {(data, loading) => {
-            console.log("loading...", data.data)
-            if (!data.loading && data.data.bookAdded) {
-              console.log("data ready", data)
-              setNotification(data.data.bookAdded.title)
-            }
-            return null
-          }}
-        </Subscription> */}
-      </div>
+      <div />
       <div>
         <button onClick={() => setPage("authors")}>authors</button>
         <button onClick={() => setPage("books")}>books</button>
